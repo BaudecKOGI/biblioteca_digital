@@ -1,26 +1,20 @@
 from pathlib import Path
-from decouple import Config, RepositoryEnv
 import os
+from decouple import config
 
 # -------------------------------
 # BASE
 # -------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Leer .env
-config = Config(RepositoryEnv(BASE_DIR / ".env"))
-
 # -------------------------------
 # SEGURIDAD
 # -------------------------------
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
-
-# 🔥 FIX REAL DEL ERROR
-DEBUG = config('DEBUG', default='True') == 'True'
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
-# 🔥 Necesario para Render
 CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com'
 ]
@@ -44,8 +38,6 @@ INSTALLED_APPS = [
 # -------------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-
-    # WhiteNoise
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -82,8 +74,16 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # -------------------------------
 # BASE DE DATOS
 # -------------------------------
-if DEBUG:
-    # 🔥 LOCAL (MySQL XAMPP)
+# 🔥 Detecta automáticamente si estás en Render
+
+if os.environ.get('RENDER'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -92,14 +92,6 @@ if DEBUG:
             'PASSWORD': config('DB_PASSWORD'),
             'HOST': config('DB_HOST'),
             'PORT': config('DB_PORT'),
-        }
-    }
-else:
-    # 🔥 PRODUCCIÓN (Render)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
@@ -131,7 +123,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # -------------------------------
-# MEDIA
+# ARCHIVOS MEDIA
 # -------------------------------
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
