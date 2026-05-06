@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Libro</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            text-align: center;
+        }
+
+        .container {
+            background: white;
+            width: 420px;
+            margin: 40px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        input, select {
+            width: 90%;
+            padding: 8px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: white;
+            background: #6c757d;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>➕ Crear Libro</h2>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <input name="titulo" placeholder="Título" required>
+        <input name="autor" placeholder="Autor" required>
+        <input name="anio" type="number" placeholder="Año" required>
+
+        <select name="categoria" required>
+            <option value="">Seleccione una categoría</option>
+            {% for c in categorias %}
+                <option value="{{ c.id }}">{{ c.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="file" name="portada" required>
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <a href="{% url 'lista' %}" class="volver">⬅ Volver al inicio</a>
+</div>
+
+</body>
+</html>

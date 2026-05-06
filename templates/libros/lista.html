@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca Digital</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .acciones {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .acciones a {
+            padding: 10px 15px;
+            margin: 5px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .btn-libro { background: #28a745; }
+        .btn-categoria { background: #007bff; }
+        .btn-crear-cat { background: #ff9800; }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px auto;
+            width: 60%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .card img {
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .botones a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .editar { background: #17a2b8; }
+        .eliminar { background: #dc3545; }
+    </style>
+</head>
+<body>
+
+<h1>📚 Biblioteca Digital</h1>
+
+<div class="acciones">
+    <a href="{% url 'crear' %}" class="btn-libro">➕ Agregar Libro</a>
+    <a href="{% url 'lista_categorias' %}" class="btn-categoria">📂 Ver Categorías</a>
+    <a href="{% url 'crear_categoria' %}" class="btn-crear-cat">➕ Crear Categoría</a>
+</div>
+
+{% for libro in libros %}
+    <div class="card">
+        <h3>{{ libro.titulo }}</h3>
+        <p><strong>Autor:</strong> {{ libro.autor }}</p>
+        <p><strong>Año:</strong> {{ libro.anio }}</p>
+        <p><strong>Categoría:</strong> {{ libro.categoria.nombre }}</p>
+
+        {% if libro.portada %}
+            <img src="{{ libro.portada.url }}" width="120">
+        {% endif %}
+
+        <div class="botones">
+            <a href="{% url 'editar' libro.id %}" class="editar">Editar</a>
+            <a href="{% url 'eliminar' libro.id %}" class="eliminar">Eliminar</a>
+        </div>
+    </div>
+{% empty %}
+    <p style="text-align:center;">No hay libros registrados.</p>
+{% endfor %}
+
+</body>
+</html>
