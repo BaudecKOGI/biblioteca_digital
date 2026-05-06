@@ -8,5 +8,5 @@ urlpatterns = [
     path('', include('libros.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# 🔥 SIEMPRE servir media (aunque DEBUG sea False)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
