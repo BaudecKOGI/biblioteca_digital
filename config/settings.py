@@ -14,7 +14,9 @@ config = Config(RepositoryEnv(BASE_DIR / ".env"))
 # SEGURIDAD
 # -------------------------------
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
-DEBUG = config('DEBUG', default=True, cast=bool)
+
+# 🔥 FIX REAL DEL ERROR
+DEBUG = config('DEBUG', default='True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -43,7 +45,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
 
-    # 🔥 WhiteNoise para producción
+    # WhiteNoise
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -80,10 +82,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # -------------------------------
 # BASE DE DATOS
 # -------------------------------
-# 🔥 LOCAL = MySQL
-# 🔥 PRODUCCIÓN (Render) = SQLite
-
 if DEBUG:
+    # 🔥 LOCAL (MySQL XAMPP)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -95,6 +95,7 @@ if DEBUG:
         }
     }
 else:
+    # 🔥 PRODUCCIÓN (Render)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -127,11 +128,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# 🔥 WhiteNoise compresión
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # -------------------------------
-# ARCHIVOS MEDIA (IMÁGENES)
+# MEDIA
 # -------------------------------
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
